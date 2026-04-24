@@ -7,7 +7,7 @@
   <meta name="description" content="OTOS Continuity protected partner hub" />
   <meta name="robots" content="noindex, nofollow" />
 
-  <link rel="stylesheet" href="css/otos.css">
+  
 
   <style>
     :root{
@@ -367,7 +367,7 @@
       if (ACCESS_CODES.some(x => x.toLowerCase() === code)) {
         sessionStorage.setItem("otos_access", "1");
         sessionStorage.setItem("otos_show_quote", "1");
-        window.location.href = "index.html";
+        window.location.href = "https://nhs.otos.digital";
       } else {
         error.textContent = "Access code not recognised.";
         input.focus();
