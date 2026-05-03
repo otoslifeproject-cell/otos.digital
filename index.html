@@ -356,8 +356,7 @@
   </div>
 
   <script>
-    const ACCESS_CODES = ["cnhs2026"];
-
+    const ACCESS_CODES =
     document.getElementById("gate-form").addEventListener("submit", function (event) {
       event.preventDefault();
 
@@ -368,7 +367,7 @@
       if (ACCESS_CODES.some(x => x.toLowerCase() === code)) {
         sessionStorage.setItem("otos_access", "1");
         sessionStorage.setItem("otos_show_quote", "1");
-        window.location.href = "https://nhs.otos.digital";
+
       } else {
         error.textContent = "Access code not recognised.";
         input.focus();
