@@ -313,7 +313,7 @@
     </nav>
   </header>
 
-  <main class="public-gate">
+  <main class="public-gate" id="login-view">
     <div class="container">
       <section class="public-copy" aria-labelledby="public-title">
         <div class="kicker">Continuity™ · Protected Partner Hub</div>
@@ -351,13 +351,57 @@
     </div>
   </main>
 
+  <section id="quote-overlay" class="quote-overlay" role="dialog" aria-modal="true" aria-label="Welcome" hidden>
+    <div class="quote-card" role="document">
+      <div class="quote-timer-bar">
+        <div class="quote-timer-fill"></div>
+      </div>
+
+      <p class="quote-text">
+        “<em>ADHD, when unsupported, is a potent route into</em> educational failure, long-term unemployment, crime, substance misuse, suicide, mental and physical illness. Economic costs to individuals and the government of <em>at least £17 billion are avoidable</em> as, when appropriately supported, people with ADHD can thrive and fully engage in a working life.”
+      </p>
+
+      <p class="quote-attribution">— NHS Independent ADHD Taskforce, 2025</p>
+
+      <div class="briefing-agreement">
+        <h2>Before continuing</h2>
+
+        <p>
+          This is a private working demonstrator shared with a small number of invited NHS, Public Health and community partners.
+        </p>
+
+        <p>
+          Access codes are unique to each recipient and are used only to understand which partners have reviewed the material and where the proposal is being shared internally.
+        </p>
+
+        <p>
+          Please do not publish or distribute externally without permission. Internal forwarding to relevant colleagues involved in ADHD, addiction, continuity or pathway discussions is welcomed.
+        </p>
+
+        <p>
+          OTOS Continuity™ is an early-stage demonstrator proposal, not a clinical service or commissioned NHS product.
+        </p>
+      </div>
+
+      <button class="quote-skip" type="button">Continue to briefing →</button>
+    </div>
+  </section>
+
   <div class="public-foot">
     OTOS Digital Ltd · Private partner briefing · noindex
   </div>
 
   <script>
-    const ACCESS_CODES =
-    document.getElementById("gate-form").addEventListener("submit", function (event) {
+    const ACCESS_CODES = [
+      "replace-this-code"
+    ];
+
+    const gateForm = document.getElementById("gate-form");
+    const loginView = document.getElementById("login-view");
+    const quoteOverlay = document.getElementById("quote-overlay");
+    const continueButton = document.querySelector(".quote-skip");
+
+    gateForm.addEventListener("submit", function (event) {
       event.preventDefault();
 
       const input = document.getElementById("access-code");
@@ -368,10 +412,16 @@
         sessionStorage.setItem("otos_access", "1");
         sessionStorage.setItem("otos_show_quote", "1");
 
+        loginView.hidden = true;
+        quoteOverlay.hidden = false;
       } else {
         error.textContent = "Access code not recognised.";
         input.focus();
       }
+    });
+
+    continueButton.addEventListener("click", function () {
+      window.location.href = "index.html";
     });
   </script>
 </body>
