@@ -547,37 +547,77 @@
     OTOS Digital Ltd · Private partner briefing · noindex
   </div>
 
-  <script>
-    const ACCESS_CODES = [
-      "cnhs"
-    ];
+ <script>
+  const gateForm = document.getElementById("gate-form");
+  const overlay = document.getElementById("transition-overlay");
+  const stageQuote = document.getElementById("stage-quote");
+  const stageStatement = document.getElementById("stage-statement");
+  const continueButton = document.getElementById("continue-button");
 
-    const gateForm = document.getElementById("gate-form");
-    const overlay = document.getElementById("transition-overlay");
-    const stageQuote = document.getElementById("stage-quote");
-    const stageStatement = document.getElementById("stage-statement");
-    const continueButton = document.getElementById("continue-button");
+  let transitionStarted = false;
 
-    let transitionStarted = false;
+  function startTransitionSequence() {
+    if (transitionStarted) return;
+    transitionStarted = true;
 
-    function startTransitionSequence() {
-      if (transitionStarted) return;
-      transitionStarted = true;
+    overlay.classList.add("is-visible");
+    stageQuote.classList.add("is-active");
+    stageStatement.classList.remove("is-active");
+    continueButton.classList.remove("is-visible");
 
-      overlay.classList.add("is-visible");
-      stageQuote.classList.add("is-active");
-      stageStatement.classList.remove("is-active");
-      continueButton.classList.remove("is-visible");
+    setTimeout(() => {
+      stageQuote.classList.remove("is-active");
+      stageStatement.classList.add("is-active");
+    }, 15000);
 
-      setTimeout(() => {
-        stageQuote.classList.remove("is-active");
-        stageStatement.classList.add("is-active");
-      }, 13000);
+    setTimeout(() => {
+      continueButton.classList.add("is-visible");
+    }, 24000);
+  }
 
-      setTimeout(() => {
-        continueButton.classList.add("is-visible");
-      }, 22000);
+  gateForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const input = document.getElementById("access-code");
+    const error = document.getElementById("gate-error");
+    const code = input.value.trim();
+
+    error.textContent = "";
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ code })
+      });
+
+      let result = {};
+      try {
+        result = await response.json();
+      } catch (_) {
+        result = {};
+      }
+
+      if (!response.ok || !result.ok) {
+        error.textContent = result.error || "Access code not recognised.";
+        input.focus();
+        return;
+      }
+
+      sessionStorage.setItem("otos_access", "1");
+      startTransitionSequence();
+    } catch (err) {
+      error.textContent = "Something went wrong. Please try again.";
+      input.focus();
     }
+  });
+
+  continueButton.addEventListener("click", function () {
+    window.location.href = "/index.html";
+  });
+</script>
 
     gateForm.addEventListener("submit", function (event) {
       event.preventDefault();
