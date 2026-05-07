@@ -292,14 +292,13 @@
       letter-spacing:.05em;
     }
 
-    /* overlay */
     .transition-overlay{
       position:fixed;
       inset:0;
       z-index:9999;
       display:grid;
       place-items:center;
-      padding:24px;
+      padding:28px;
       background:rgba(5,8,14,.18);
       backdrop-filter:blur(14px);
       -webkit-backdrop-filter:blur(14px);
@@ -316,55 +315,48 @@
     }
 
     .transition-card{
-      width:min(960px, 100%);
-      min-height:min(72vh, 780px);
-      padding:clamp(30px, 4vw, 52px);
+      width:min(940px, 100%);
+      max-height:calc(100vh - 72px);
+      padding:clamp(28px, 4vw, 48px);
       border-radius:34px;
       border:1px solid rgba(255,255,255,.16);
-      background:linear-gradient(180deg,rgba(16,23,33,.86),rgba(9,12,18,.78));
+      background:linear-gradient(180deg,rgba(16,23,33,.88),rgba(9,12,18,.80));
       box-shadow:0 34px 90px rgba(0,0,0,.40);
       backdrop-filter:blur(26px);
       -webkit-backdrop-filter:blur(26px);
       position:relative;
-      overflow:hidden;
+      overflow:auto;
     }
 
     .transition-card::before{
       content:"";
-      position:absolute;
-      left:52px;
-      right:52px;
-      top:28px;
+      display:block;
       height:3px;
+      width:100%;
+      margin-bottom:30px;
       border-radius:999px;
       background:linear-gradient(90deg,var(--orange),var(--orange-2));
-      opacity:.9;
     }
 
     .stage{
-      position:absolute;
-      inset:52px;
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-start;
+      display:none;
       opacity:0;
-      transform:translateY(18px);
-      pointer-events:none;
+      transform:translateY(14px);
       transition:opacity .8s ease, transform .8s ease;
     }
 
     .stage.is-active{
+      display:flex;
+      flex-direction:column;
       opacity:1;
       transform:translateY(0);
-      pointer-events:auto;
     }
 
     .quote-text{
-      margin-top:18px;
       color:#fff;
-      font-size:clamp(30px, 4.05vw, 66px);
-      line-height:.98;
-      letter-spacing:-.06em;
+      font-size:clamp(22px, 2.55vw, 40px);
+      line-height:1.08;
+      letter-spacing:-.045em;
       font-weight:1000;
       max-width:100%;
     }
@@ -375,18 +367,17 @@
     }
 
     .quote-attribution{
-      margin-top:28px;
+      margin-top:26px;
       color:rgba(251,247,238,.64);
-      font-size:14px;
+      font-size:13px;
       font-weight:900;
       letter-spacing:.06em;
       text-transform:uppercase;
     }
 
     .statement-heading{
-      margin-top:24px;
       color:#fff;
-      font-size:clamp(38px, 4vw, 68px);
+      font-size:clamp(34px, 3.6vw, 58px);
       line-height:.95;
       letter-spacing:-.06em;
       font-weight:1000;
@@ -401,14 +392,13 @@
 
     .statement-copy p{
       color:rgba(251,247,238,.76);
-      font-size:clamp(18px,1.35vw,22px);
-      line-height:1.7;
+      font-size:clamp(17px,1.2vw,20px);
+      line-height:1.65;
       font-weight:620;
     }
 
     .continue-wrap{
-      margin-top:auto;
-      padding-top:28px;
+      margin-top:30px;
     }
 
     .quote-skip{
@@ -443,34 +433,27 @@
       .access-pill{display:none}
       .public-foot{position:static;padding:0 18px 18px}
 
+      .transition-overlay{
+        padding:18px;
+      }
+
       .transition-card{
-        min-height:auto;
+        max-height:calc(100vh - 36px);
         padding:24px;
-      }
-
-      .transition-card::before{
-        left:24px;
-        right:24px;
-        top:18px;
-      }
-
-      .stage{
-        position:relative;
-        inset:auto;
-        min-height:70vh;
+        border-radius:26px;
       }
 
       .quote-text{
-        font-size:clamp(26px, 9vw, 44px);
-        line-height:1.02;
+        font-size:clamp(22px, 7.2vw, 34px);
+        line-height:1.08;
       }
 
       .statement-heading{
-        font-size:clamp(34px, 10vw, 52px);
+        font-size:clamp(32px, 9vw, 48px);
       }
 
       .statement-copy p{
-        font-size:17px;
+        font-size:16px;
       }
     }
   </style>
@@ -586,13 +569,11 @@
       stageStatement.classList.remove("is-active");
       continueButton.classList.remove("is-visible");
 
-      // Hold quote for 13 seconds
       setTimeout(() => {
         stageQuote.classList.remove("is-active");
         stageStatement.classList.add("is-active");
       }, 13000);
 
-      // Hold statement for 9 seconds, then reveal continue button
       setTimeout(() => {
         continueButton.classList.add("is-visible");
       }, 22000);
