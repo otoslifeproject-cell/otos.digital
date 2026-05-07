@@ -474,10 +474,10 @@
     <div class="transition-card">
       <div id="stage-quote" class="stage is-active">
         <p class="quote-text">
-          “<em>ADHD, when unsupported, is a potent route into</em> educational failure, long-term unemployment, crime, substance misuse, suicide, mental and physical illness. Economic costs to individuals and the government of <em>at least £17 billion are avoidable</em> as, when appropriately supported, people with ADHD can thrive and fully engage in a working life.”
+          “<em>ADHD, when unsupported, is a potent route into</em> educational failure, long-term unemployment, crime, <em>substance misuse</em>, suicide, mental and physical illness. Economic costs to individuals and the government of <em>at least £17 billion are avoidable</em> as, when appropriately supported, people with ADHD can <<em>thrive and fully engage</em> in a working life.”
         </p>
 
-        <p class="quote-attribution">— NHS Independent ADHD Taskforce, 2025</p>
+        <p class="quote-attribution">— NHS Independent ADHD Taskforce, April 2025</p>
       </div>
 
       <div id="stage-statement" class="stage">
@@ -485,7 +485,7 @@
 
         <div class="statement-copy">
           <p>
-            This is a private working pre-pilot scoping discussion around ADHD, addiction and continuity of care — built from direct lived experience and now being explored with NHS, Public Health and community partners.
+            Private and confidential. This is a pre-pilot, scoping discussion around ADHD driven addiction and continuity of care — built from direct, lived experience and now being explored with NHS, Public Health and Community Partners.
           </p>
 
           <p>
@@ -497,7 +497,7 @@
           </p>
 
           <p>
-            OTOS Continuity™ is not a clinical service or commissioned NHS product.
+            OTOS Continuity™ is not a clinical service. It is not a commissioned NHS product. This is not an NHS website.
           </p>
         </div>
 
@@ -513,69 +513,45 @@
   </div>
 
   <script>
-    const gateForm = document.getElementById("gate-form");
-    const overlay = document.getElementById("transition-overlay");
-    const stageQuote = document.getElementById("stage-quote");
-    const stageStatement = document.getElementById("stage-statement");
-    const continueButton = document.getElementById("continue-button");
+  const ACCESS_CODES = ["cnhs"];
 
-    let transitionStarted = false;
+  const gateForm = document.getElementById("gate-form");
+  const overlay = document.getElementById("transition-overlay");
+  const stageQuote = document.getElementById("stage-quote");
+  const stageStatement = document.getElementById("stage-statement");
+  const continueButton = document.getElementById("continue-button");
 
-    function startTransitionSequence() {
-      if (transitionStarted) return;
-      transitionStarted = true;
+  function startTransitionSequence() {
+    overlay.classList.add("is-visible");
+    stageQuote.classList.add("is-active");
+    stageStatement.classList.remove("is-active");
+  }
 
-      overlay.classList.add("is-visible");
-      stageQuote.classList.add("is-active");
-      stageStatement.classList.remove("is-active");
-      continueButton.classList.remove("is-visible");
+  function showStatement() {
+    stageQuote.classList.remove("is-active");
+    stageStatement.classList.add("is-active");
+  }
 
-      setTimeout(() => {
-        stageQuote.classList.remove("is-active");
-        stageStatement.classList.add("is-active");
-      }, 15000);
+  gateForm.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-      setTimeout(() => {
-        continueButton.classList.add("is-visible");
-      }, 24000);
-    }
+    const input = document.getElementById("access-code");
+    const error = document.getElementById("gate-error");
+    const code = input.value.trim().toLowerCase();
 
-    gateForm.addEventListener("submit", async function (event) {
-      event.preventDefault();
-
-      const input = document.getElementById("access-code");
-      const error = document.getElementById("gate-error");
-      const code = input.value.trim();
-
+    if (ACCESS_CODES.includes(code)) {
       error.textContent = "";
+      sessionStorage.setItem("otos_access", "1");
+      startTransitionSequence();
+    } else {
+      error.textContent = "Access code not recognised.";
+      input.focus();
+    }
+  });
 
-      try {
-        const response = await fetch("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code })
-        });
+  stageQuote.addEventListener("click", showStatement);
 
-        let result = {};
-        try { result = await response.json(); } catch (_) {}
-
-        if (!response.ok || !result.ok) {
-          error.textContent = result.error || "Access code not recognised.";
-          input.focus();
-          return;
-        }
-
-        sessionStorage.setItem("otos_access", "1");
-        startTransitionSequence();
-      } catch (err) {
-        error.textContent = "Something went wrong. Please try again.";
-        input.focus();
-      }
-    });
-
-    continueButton.addEventListener("click", function () {
-      window.location.href = "/index.html";
-    });
-  </script>
-</body>
-</html>
+  continueButton.addEventListener("click", function () {
+    window.location.href = "/index.html";
+  });
+</script>
