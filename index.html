@@ -14,8 +14,6 @@
       --muted:#aeb4c0;
       --orange:#f26c0d;
       --orange-2:#ff8a1f;
-      --line:rgba(255,255,255,.13);
-      --panel:rgba(17,24,33,.74);
       --max:1360px;
       --font:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
     }
@@ -44,7 +42,6 @@
       z-index:20;
       height:92px;
       pointer-events:none;
-      background:transparent;
     }
 
     .nav-shell{
@@ -324,7 +321,6 @@
       box-shadow:0 34px 90px rgba(0,0,0,.40);
       backdrop-filter:blur(26px);
       -webkit-backdrop-filter:blur(26px);
-      position:relative;
       overflow:auto;
     }
 
@@ -338,19 +334,8 @@
       background:linear-gradient(90deg,var(--orange),var(--orange-2));
     }
 
-    .stage{
-      display:none;
-      opacity:0;
-      transform:translateY(14px);
-      transition:opacity .8s ease, transform .8s ease;
-    }
-
-    .stage.is-active{
-      display:flex;
-      flex-direction:column;
-      opacity:1;
-      transform:translateY(0);
-    }
+    .stage{display:none}
+    .stage.is-active{display:flex;flex-direction:column}
 
     .quote-text{
       color:#fff;
@@ -397,9 +382,7 @@
       font-weight:620;
     }
 
-    .continue-wrap{
-      margin-top:30px;
-    }
+    .continue-wrap{margin-top:30px}
 
     .quote-skip{
       min-height:56px;
@@ -432,29 +415,11 @@
       .nav-shell{width:calc(100% - 28px)}
       .access-pill{display:none}
       .public-foot{position:static;padding:0 18px 18px}
-
-      .transition-overlay{
-        padding:18px;
-      }
-
-      .transition-card{
-        max-height:calc(100vh - 36px);
-        padding:24px;
-        border-radius:26px;
-      }
-
-      .quote-text{
-        font-size:clamp(22px, 7.2vw, 34px);
-        line-height:1.08;
-      }
-
-      .statement-heading{
-        font-size:clamp(32px, 9vw, 48px);
-      }
-
-      .statement-copy p{
-        font-size:16px;
-      }
+      .transition-overlay{padding:18px}
+      .transition-card{max-height:calc(100vh - 36px);padding:24px;border-radius:26px}
+      .quote-text{font-size:clamp(22px,7.2vw,34px);line-height:1.08}
+      .statement-heading{font-size:clamp(32px,9vw,48px)}
+      .statement-copy p{font-size:16px}
     }
   </style>
 </head>
@@ -520,7 +485,7 @@
 
         <div class="statement-copy">
           <p>
-            This is a private working demonstrator shared with a small number of invited NHS, Public Health and community partners.
+            This is a private working pre-pilot scoping discussion around ADHD, addiction and continuity of care — built from direct lived experience and now being explored with NHS, Public Health and community partners.
           </p>
 
           <p>
@@ -532,7 +497,7 @@
           </p>
 
           <p>
-            OTOS Continuity™ is an early-stage demonstrator proposal, not a clinical service or commissioned NHS product.
+            OTOS Continuity™ is not a clinical service or commissioned NHS product.
           </p>
         </div>
 
@@ -547,97 +512,69 @@
     OTOS Digital Ltd · Private partner briefing · noindex
   </div>
 
- <script>
-  const gateForm = document.getElementById("gate-form");
-  const overlay = document.getElementById("transition-overlay");
-  const stageQuote = document.getElementById("stage-quote");
-  const stageStatement = document.getElementById("stage-statement");
-  const continueButton = document.getElementById("continue-button");
+  <script>
+    const gateForm = document.getElementById("gate-form");
+    const overlay = document.getElementById("transition-overlay");
+    const stageQuote = document.getElementById("stage-quote");
+    const stageStatement = document.getElementById("stage-statement");
+    const continueButton = document.getElementById("continue-button");
 
-  let transitionStarted = false;
+    let transitionStarted = false;
 
-  function startTransitionSequence() {
-    if (transitionStarted) return;
-    transitionStarted = true;
+    function startTransitionSequence() {
+      if (transitionStarted) return;
+      transitionStarted = true;
 
-    overlay.classList.add("is-visible");
-    stageQuote.classList.add("is-active");
-    stageStatement.classList.remove("is-active");
-    continueButton.classList.remove("is-visible");
+      overlay.classList.add("is-visible");
+      stageQuote.classList.add("is-active");
+      stageStatement.classList.remove("is-active");
+      continueButton.classList.remove("is-visible");
 
-    setTimeout(() => {
-      stageQuote.classList.remove("is-active");
-      stageStatement.classList.add("is-active");
-    }, 15000);
+      setTimeout(() => {
+        stageQuote.classList.remove("is-active");
+        stageStatement.classList.add("is-active");
+      }, 15000);
 
-    setTimeout(() => {
-      continueButton.classList.add("is-visible");
-    }, 24000);
-  }
-
-  gateForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    const input = document.getElementById("access-code");
-    const error = document.getElementById("gate-error");
-    const code = input.value.trim();
-
-    error.textContent = "";
-
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ code })
-      });
-
-      let result = {};
-      try {
-        result = await response.json();
-      } catch (_) {
-        result = {};
-      }
-
-      if (!response.ok || !result.ok) {
-        error.textContent = result.error || "Access code not recognised.";
-        input.focus();
-        return;
-      }
-
-      sessionStorage.setItem("otos_access", "1");
-      startTransitionSequence();
-    } catch (err) {
-      error.textContent = "Something went wrong. Please try again.";
-      input.focus();
+      setTimeout(() => {
+        continueButton.classList.add("is-visible");
+      }, 24000);
     }
-  });
 
-  continueButton.addEventListener("click", function () {
-    window.location.href = "/index.html";
-  });
-</script>
-
-    gateForm.addEventListener("submit", function (event) {
+    gateForm.addEventListener("submit", async function (event) {
       event.preventDefault();
 
       const input = document.getElementById("access-code");
       const error = document.getElementById("gate-error");
-      const code = input.value.trim().toLowerCase();
+      const code = input.value.trim();
 
-      if (ACCESS_CODES.some(x => x.toLowerCase() === code)) {
-        error.textContent = "";
+      error.textContent = "";
+
+      try {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code })
+        });
+
+        let result = {};
+        try { result = await response.json(); } catch (_) {}
+
+        if (!response.ok || !result.ok) {
+          error.textContent = result.error || "Access code not recognised.";
+          input.focus();
+          return;
+        }
+
         sessionStorage.setItem("otos_access", "1");
         startTransitionSequence();
-      } else {
-        error.textContent = "Access code not recognised.";
+      } catch (err) {
+        error.textContent = "Something went wrong. Please try again.";
         input.focus();
       }
     });
 
     continueButton.addEventListener("click", function () {
-      window.location.href = "index.html";
+      window.location.href = "/index.html";
     });
   </script>
 </body>
